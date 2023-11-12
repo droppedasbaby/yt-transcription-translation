@@ -1,0 +1,8 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignoreWords": ["golangci", "hclsimple", "youtu", "kkdai", "entgo", "mattn"],
+  "words": ["grewal", "transcription"],
+  "ignorePaths": ["cspell.json", ".golangci.yml", "go.mod", "go.sum"],
+  "flagWords": []
+}
