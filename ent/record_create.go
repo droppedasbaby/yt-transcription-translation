@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/GrewalAS/yt-transcription-translation/ent/record"
+	"github.com/google/uuid"
 )
 
 // RecordCreate is the builder for creating a Record entity.
@@ -48,6 +49,20 @@ func (rc *RecordCreate) SetNillableFileLocation(s *string) *RecordCreate {
 // SetStatus sets the "status" field.
 func (rc *RecordCreate) SetStatus(r record.Status) *RecordCreate {
 	rc.mutation.SetStatus(r)
+	return rc
+}
+
+// SetRunID sets the "run_id" field.
+func (rc *RecordCreate) SetRunID(u uuid.UUID) *RecordCreate {
+	rc.mutation.SetRunID(u)
+	return rc
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (rc *RecordCreate) SetNillableRunID(u *uuid.UUID) *RecordCreate {
+	if u != nil {
+		rc.SetRunID(*u)
+	}
 	return rc
 }
 
@@ -155,6 +170,10 @@ func (rc *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Status(); ok {
 		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
+	}
+	if value, ok := rc.mutation.RunID(); ok {
+		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
+		_node.RunID = value
 	}
 	return _node, _spec
 }

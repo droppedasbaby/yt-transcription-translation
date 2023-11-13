@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/GrewalAS/yt-transcription-translation/ent/predicate"
 	"github.com/GrewalAS/yt-transcription-translation/ent/record"
+	"github.com/google/uuid"
 )
 
 const (
@@ -36,6 +37,7 @@ type RecordMutation struct {
 	video_id      *string
 	file_location *string
 	status        *record.Status
+	run_id        *uuid.UUID
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Record, error)
@@ -297,6 +299,55 @@ func (m *RecordMutation) ResetStatus() {
 	m.status = nil
 }
 
+// SetRunID sets the "run_id" field.
+func (m *RecordMutation) SetRunID(u uuid.UUID) {
+	m.run_id = &u
+}
+
+// RunID returns the value of the "run_id" field in the mutation.
+func (m *RecordMutation) RunID() (r uuid.UUID, exists bool) {
+	v := m.run_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunID returns the old "run_id" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldRunID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunID: %w", err)
+	}
+	return oldValue.RunID, nil
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (m *RecordMutation) ClearRunID() {
+	m.run_id = nil
+	m.clearedFields[record.FieldRunID] = struct{}{}
+}
+
+// RunIDCleared returns if the "run_id" field was cleared in this mutation.
+func (m *RecordMutation) RunIDCleared() bool {
+	_, ok := m.clearedFields[record.FieldRunID]
+	return ok
+}
+
+// ResetRunID resets all changes to the "run_id" field.
+func (m *RecordMutation) ResetRunID() {
+	m.run_id = nil
+	delete(m.clearedFields, record.FieldRunID)
+}
+
 // Where appends a list predicates to the RecordMutation builder.
 func (m *RecordMutation) Where(ps ...predicate.Record) {
 	m.predicates = append(m.predicates, ps...)
@@ -331,7 +382,7 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.video_url != nil {
 		fields = append(fields, record.FieldVideoURL)
 	}
@@ -343,6 +394,9 @@ func (m *RecordMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, record.FieldStatus)
+	}
+	if m.run_id != nil {
+		fields = append(fields, record.FieldRunID)
 	}
 	return fields
 }
@@ -360,6 +414,8 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.FileLocation()
 	case record.FieldStatus:
 		return m.Status()
+	case record.FieldRunID:
+		return m.RunID()
 	}
 	return nil, false
 }
@@ -377,6 +433,8 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldFileLocation(ctx)
 	case record.FieldStatus:
 		return m.OldStatus(ctx)
+	case record.FieldRunID:
+		return m.OldRunID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Record field %s", name)
 }
@@ -414,6 +472,13 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
+	case record.FieldRunID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Record field %s", name)
 }
@@ -447,6 +512,9 @@ func (m *RecordMutation) ClearedFields() []string {
 	if m.FieldCleared(record.FieldFileLocation) {
 		fields = append(fields, record.FieldFileLocation)
 	}
+	if m.FieldCleared(record.FieldRunID) {
+		fields = append(fields, record.FieldRunID)
+	}
 	return fields
 }
 
@@ -463,6 +531,9 @@ func (m *RecordMutation) ClearField(name string) error {
 	switch name {
 	case record.FieldFileLocation:
 		m.ClearFileLocation()
+		return nil
+	case record.FieldRunID:
+		m.ClearRunID()
 		return nil
 	}
 	return fmt.Errorf("unknown Record nullable field %s", name)
@@ -483,6 +554,9 @@ func (m *RecordMutation) ResetField(name string) error {
 		return nil
 	case record.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case record.FieldRunID:
+		m.ResetRunID()
 		return nil
 	}
 	return fmt.Errorf("unknown Record field %s", name)

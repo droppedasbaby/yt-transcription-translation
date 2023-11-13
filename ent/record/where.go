@@ -5,6 +5,7 @@ package record
 import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/GrewalAS/yt-transcription-translation/ent/predicate"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -65,6 +66,11 @@ func VideoID(v string) predicate.Record {
 // FileLocation applies equality check predicate on the "file_location" field. It's identical to FileLocationEQ.
 func FileLocation(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldFileLocation, v))
+}
+
+// RunID applies equality check predicate on the "run_id" field. It's identical to RunIDEQ.
+func RunID(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldRunID, v))
 }
 
 // VideoURLEQ applies the EQ predicate on the "video_url" field.
@@ -290,6 +296,56 @@ func StatusIn(vs ...Status) predicate.Record {
 // StatusNotIn applies the NotIn predicate on the "status" field.
 func StatusNotIn(vs ...Status) predicate.Record {
 	return predicate.Record(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// RunIDEQ applies the EQ predicate on the "run_id" field.
+func RunIDEQ(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldRunID, v))
+}
+
+// RunIDNEQ applies the NEQ predicate on the "run_id" field.
+func RunIDNEQ(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldRunID, v))
+}
+
+// RunIDIn applies the In predicate on the "run_id" field.
+func RunIDIn(vs ...uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldRunID, vs...))
+}
+
+// RunIDNotIn applies the NotIn predicate on the "run_id" field.
+func RunIDNotIn(vs ...uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldRunID, vs...))
+}
+
+// RunIDGT applies the GT predicate on the "run_id" field.
+func RunIDGT(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldRunID, v))
+}
+
+// RunIDGTE applies the GTE predicate on the "run_id" field.
+func RunIDGTE(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldRunID, v))
+}
+
+// RunIDLT applies the LT predicate on the "run_id" field.
+func RunIDLT(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldRunID, v))
+}
+
+// RunIDLTE applies the LTE predicate on the "run_id" field.
+func RunIDLTE(v uuid.UUID) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldRunID, v))
+}
+
+// RunIDIsNil applies the IsNil predicate on the "run_id" field.
+func RunIDIsNil() predicate.Record {
+	return predicate.Record(sql.FieldIsNull(FieldRunID))
+}
+
+// RunIDNotNil applies the NotNil predicate on the "run_id" field.
+func RunIDNotNil() predicate.Record {
+	return predicate.Record(sql.FieldNotNull(FieldRunID))
 }
 
 // And groups predicates with the AND operator between them.

@@ -1,15 +1,14 @@
 package types
 
-type RecordStatus string
+import "github.com/GrewalAS/yt-transcription-translation/ent/record"
 
-const (
-	RecordStatusDownloading RecordStatus = "downloading"
-	RecordStatusDownloaded  RecordStatus = "downloaded"
-)
+type RecordPostBody struct {
+	URL string `json:"url"`
+}
 
-type Record struct {
-	VideoURL     string       `json:"video_url"`
-	VideoID      string       `json:"video_id"`
-	FileLocation string       `json:"file_location"`
-	Status       RecordStatus `json:"status,omitempty"`
+type RecordResponse struct {
+	VideoURL     string        `json:"video_url"`
+	VideoID      string        `json:"video_id"`
+	FileLocation string        `json:"file_location"`
+	Status       record.Status `json:"status,omitempty"`
 }

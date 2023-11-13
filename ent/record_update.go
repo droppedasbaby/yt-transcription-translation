@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/GrewalAS/yt-transcription-translation/ent/predicate"
 	"github.com/GrewalAS/yt-transcription-translation/ent/record"
+	"github.com/google/uuid"
 )
 
 // RecordUpdate is the builder for updating Record entities.
@@ -62,6 +63,26 @@ func (ru *RecordUpdate) ClearFileLocation() *RecordUpdate {
 // SetStatus sets the "status" field.
 func (ru *RecordUpdate) SetStatus(r record.Status) *RecordUpdate {
 	ru.mutation.SetStatus(r)
+	return ru
+}
+
+// SetRunID sets the "run_id" field.
+func (ru *RecordUpdate) SetRunID(u uuid.UUID) *RecordUpdate {
+	ru.mutation.SetRunID(u)
+	return ru
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (ru *RecordUpdate) SetNillableRunID(u *uuid.UUID) *RecordUpdate {
+	if u != nil {
+		ru.SetRunID(*u)
+	}
+	return ru
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (ru *RecordUpdate) ClearRunID() *RecordUpdate {
+	ru.mutation.ClearRunID()
 	return ru
 }
 
@@ -149,6 +170,12 @@ func (ru *RecordUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.Status(); ok {
 		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
 	}
+	if value, ok := ru.mutation.RunID(); ok {
+		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
+	}
+	if ru.mutation.RunIDCleared() {
+		_spec.ClearField(record.FieldRunID, field.TypeUUID)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{record.Label}
@@ -204,6 +231,26 @@ func (ruo *RecordUpdateOne) ClearFileLocation() *RecordUpdateOne {
 // SetStatus sets the "status" field.
 func (ruo *RecordUpdateOne) SetStatus(r record.Status) *RecordUpdateOne {
 	ruo.mutation.SetStatus(r)
+	return ruo
+}
+
+// SetRunID sets the "run_id" field.
+func (ruo *RecordUpdateOne) SetRunID(u uuid.UUID) *RecordUpdateOne {
+	ruo.mutation.SetRunID(u)
+	return ruo
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (ruo *RecordUpdateOne) SetNillableRunID(u *uuid.UUID) *RecordUpdateOne {
+	if u != nil {
+		ruo.SetRunID(*u)
+	}
+	return ruo
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (ruo *RecordUpdateOne) ClearRunID() *RecordUpdateOne {
+	ruo.mutation.ClearRunID()
 	return ruo
 }
 
@@ -320,6 +367,12 @@ func (ruo *RecordUpdateOne) sqlSave(ctx context.Context) (_node *Record, err err
 	}
 	if value, ok := ruo.mutation.Status(); ok {
 		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := ruo.mutation.RunID(); ok {
+		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
+	}
+	if ruo.mutation.RunIDCleared() {
+		_spec.ClearField(record.FieldRunID, field.TypeUUID)
 	}
 	_node = &Record{config: ruo.config}
 	_spec.Assign = _node.assignValues

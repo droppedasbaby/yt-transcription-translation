@@ -10,7 +10,7 @@ import (
 	"github.com/kkdai/youtube/v2"
 )
 
-func getVideoID(vURL string) (string, error) {
+func GetVideoID(vURL string) (string, error) {
 	parsedURL, err := url.Parse(vURL)
 	if err != nil {
 		return "", fmt.Errorf("parse URL: %w", err)
@@ -61,14 +61,9 @@ func createFile(id string) (*os.File, error) {
 	return file, nil
 }
 
-func Download(vURL string) (string, int64, error) {
-	id, err := getVideoID(vURL)
-	if err != nil {
-		return "", -1, fmt.Errorf("fetch video id from url: %w", err)
-	}
-
+func DownloadVideo(ID string) (string, int64, error) {
 	client := youtube.Client{}
-	video, err := client.GetVideo(id)
+	video, err := client.GetVideo(ID)
 	if err != nil {
 		return "", -1, fmt.Errorf("fetch video info: %w", err)
 	}
@@ -80,7 +75,7 @@ func Download(vURL string) (string, int64, error) {
 	}
 	defer stream.Close()
 
-	file, err := createFile(id)
+	file, err := createFile(ID)
 	if err != nil {
 		return "", length, fmt.Errorf("create file: %w", err)
 	}

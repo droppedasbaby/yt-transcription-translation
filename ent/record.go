@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/GrewalAS/yt-transcription-translation/ent/record"
+	"github.com/google/uuid"
 )
 
 // Record is the model entity for the Record schema.
@@ -23,7 +24,9 @@ type Record struct {
 	// FileLocation holds the value of the "file_location" field.
 	FileLocation string `json:"file_location,omitempty"`
 	// Status holds the value of the "status" field.
-	Status       record.Status `json:"status,omitempty"`
+	Status record.Status `json:"status,omitempty"`
+	// RunID holds the value of the "run_id" field.
+	RunID        uuid.UUID `json:"run_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -36,6 +39,8 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case record.FieldVideoURL, record.FieldVideoID, record.FieldFileLocation, record.FieldStatus:
 			values[i] = new(sql.NullString)
+		case record.FieldRunID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -80,6 +85,12 @@ func (r *Record) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				r.Status = record.Status(value.String)
+			}
+		case record.FieldRunID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field run_id", values[i])
+			} else if value != nil {
+				r.RunID = *value
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
@@ -128,6 +139,9 @@ func (r *Record) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", r.Status))
+	builder.WriteString(", ")
+	builder.WriteString("run_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.RunID))
 	builder.WriteByte(')')
 	return builder.String()
 }

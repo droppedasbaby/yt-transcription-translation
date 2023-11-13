@@ -21,6 +21,8 @@ const (
 	FieldFileLocation = "file_location"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldRunID holds the string denoting the run_id field in the database.
+	FieldRunID = "run_id"
 	// Table holds the table name of the record in the database.
 	Table = "records"
 )
@@ -32,6 +34,7 @@ var Columns = []string{
 	FieldVideoID,
 	FieldFileLocation,
 	FieldStatus,
+	FieldRunID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -58,7 +61,10 @@ type Status string
 
 // Status values.
 const (
-	StatusDownloading Status = "downloaded"
+	StatusDownloading Status = "downloading"
+	StatusDownloaded  Status = "downloaded"
+	StatusTranscribed Status = "transcribed"
+	StatusTranslated  Status = "translated"
 )
 
 func (s Status) String() string {
@@ -68,7 +74,7 @@ func (s Status) String() string {
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s Status) error {
 	switch s {
-	case StatusDownloading:
+	case StatusDownloading, StatusDownloaded, StatusTranscribed, StatusTranslated:
 		return nil
 	default:
 		return fmt.Errorf("record: invalid enum value for status field: %q", s)
@@ -101,4 +107,9 @@ func ByFileLocation(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByRunID orders the results by the run_id field.
+func ByRunID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunID, opts...).ToFunc()
 }

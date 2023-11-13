@@ -3,8 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
-
-	"github.com/GrewalAS/yt-transcription-translation/types"
+	"github.com/google/uuid"
 )
 
 // Record holds the schema definition for the Record entity.
@@ -19,7 +18,13 @@ func (Record) Fields() []ent.Field {
 		field.Text("video_id").NotEmpty().Unique(),
 		field.Text("file_location").NotEmpty().Optional(),
 		field.Enum("status").
-			NamedValues(string(types.RecordStatusDownloading), string(types.RecordStatusDownloaded)),
+			NamedValues(
+				"Downloading", "downloading",
+				"Downloaded", "downloaded",
+				"Transcribed", "transcribed",
+				"Translated", "translated",
+			),
+		field.UUID("run_id", uuid.UUID{}).Optional(),
 	}
 }
 

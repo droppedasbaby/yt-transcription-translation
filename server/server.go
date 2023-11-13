@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3" // sqlite3 driver
 	"go.uber.org/zap"
 
@@ -16,24 +17,34 @@ type Server struct {
 	client     *ent.Client
 	httpServer *http.Server
 	logger     *zap.Logger
+	runID      uuid.UUID
 }
 
 func NewServer(client *ent.Client, parentLogger *zap.Logger) *Server {
-	logger := parentLogger.With(zap.String("component", "cmd.Server"))
+	logger := parentLogger.With(zap.String("component", "Server"))
+	runID := uuid.New()
 	handler := http.NewServeMux()
-	handler.HandleFunc("/start", startHandler)
-
-	server := &http.Server{
+	httpServer := &http.Server{
 		Addr:         ":61235",
 		Handler:      handler,
 		ReadTimeout:  internal.ConnReadIdleTimeoutS,
 		WriteTimeout: internal.ConnWriteIdleTimeoutS,
 	}
+	server := &Server{client: client, logger: logger, runID: runID, httpServer: httpServer}
+	handler.Handle("/start",
+		internal.ChainMiddleware(
+			http.HandlerFunc(server.startHandler),
+			internal.MethodChecker(http.MethodPost),
+			internal.JSONHeadersMiddleware,
+			internal.LoggingMiddleware(logger),
+		),
+	)
 
-	return &Server{client: client, httpServer: server, logger: logger}
+	return server
 }
 
 func (s *Server) ManagerServerLifecycle(ctx context.Context) {
+	s.logger = s.logger.With(zap.String("component", "Server.ManagerServerLifecycle"))
 	go func() {
 		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			if errors.Is(err, http.ErrServerClosed) {
