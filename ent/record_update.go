@@ -40,6 +40,18 @@ func (ru *RecordUpdate) SetVideoID(s string) *RecordUpdate {
 	return ru
 }
 
+// SetOriginalLanguage sets the "original_language" field.
+func (ru *RecordUpdate) SetOriginalLanguage(s string) *RecordUpdate {
+	ru.mutation.SetOriginalLanguage(s)
+	return ru
+}
+
+// SetStatus sets the "status" field.
+func (ru *RecordUpdate) SetStatus(r record.Status) *RecordUpdate {
+	ru.mutation.SetStatus(r)
+	return ru
+}
+
 // SetFileLocation sets the "file_location" field.
 func (ru *RecordUpdate) SetFileLocation(s string) *RecordUpdate {
 	ru.mutation.SetFileLocation(s)
@@ -60,12 +72,6 @@ func (ru *RecordUpdate) ClearFileLocation() *RecordUpdate {
 	return ru
 }
 
-// SetStatus sets the "status" field.
-func (ru *RecordUpdate) SetStatus(r record.Status) *RecordUpdate {
-	ru.mutation.SetStatus(r)
-	return ru
-}
-
 // SetRunID sets the "run_id" field.
 func (ru *RecordUpdate) SetRunID(u uuid.UUID) *RecordUpdate {
 	ru.mutation.SetRunID(u)
@@ -83,6 +89,66 @@ func (ru *RecordUpdate) SetNillableRunID(u *uuid.UUID) *RecordUpdate {
 // ClearRunID clears the value of the "run_id" field.
 func (ru *RecordUpdate) ClearRunID() *RecordUpdate {
 	ru.mutation.ClearRunID()
+	return ru
+}
+
+// SetTranscript sets the "transcript" field.
+func (ru *RecordUpdate) SetTranscript(s string) *RecordUpdate {
+	ru.mutation.SetTranscript(s)
+	return ru
+}
+
+// SetNillableTranscript sets the "transcript" field if the given value is not nil.
+func (ru *RecordUpdate) SetNillableTranscript(s *string) *RecordUpdate {
+	if s != nil {
+		ru.SetTranscript(*s)
+	}
+	return ru
+}
+
+// ClearTranscript clears the value of the "transcript" field.
+func (ru *RecordUpdate) ClearTranscript() *RecordUpdate {
+	ru.mutation.ClearTranscript()
+	return ru
+}
+
+// SetTranslationTargetLanguage sets the "translation_target_language" field.
+func (ru *RecordUpdate) SetTranslationTargetLanguage(s string) *RecordUpdate {
+	ru.mutation.SetTranslationTargetLanguage(s)
+	return ru
+}
+
+// SetNillableTranslationTargetLanguage sets the "translation_target_language" field if the given value is not nil.
+func (ru *RecordUpdate) SetNillableTranslationTargetLanguage(s *string) *RecordUpdate {
+	if s != nil {
+		ru.SetTranslationTargetLanguage(*s)
+	}
+	return ru
+}
+
+// ClearTranslationTargetLanguage clears the value of the "translation_target_language" field.
+func (ru *RecordUpdate) ClearTranslationTargetLanguage() *RecordUpdate {
+	ru.mutation.ClearTranslationTargetLanguage()
+	return ru
+}
+
+// SetTranslation sets the "translation" field.
+func (ru *RecordUpdate) SetTranslation(s string) *RecordUpdate {
+	ru.mutation.SetTranslation(s)
+	return ru
+}
+
+// SetNillableTranslation sets the "translation" field if the given value is not nil.
+func (ru *RecordUpdate) SetNillableTranslation(s *string) *RecordUpdate {
+	if s != nil {
+		ru.SetTranslation(*s)
+	}
+	return ru
+}
+
+// ClearTranslation clears the value of the "translation" field.
+func (ru *RecordUpdate) ClearTranslation() *RecordUpdate {
+	ru.mutation.ClearTranslation()
 	return ru
 }
 
@@ -130,14 +196,14 @@ func (ru *RecordUpdate) check() error {
 			return &ValidationError{Name: "video_id", err: fmt.Errorf(`ent: validator failed for field "Record.video_id": %w`, err)}
 		}
 	}
-	if v, ok := ru.mutation.FileLocation(); ok {
-		if err := record.FileLocationValidator(v); err != nil {
-			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
-		}
-	}
 	if v, ok := ru.mutation.Status(); ok {
 		if err := record.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Record.status": %w`, err)}
+		}
+	}
+	if v, ok := ru.mutation.FileLocation(); ok {
+		if err := record.FileLocationValidator(v); err != nil {
+			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
 		}
 	}
 	return nil
@@ -161,20 +227,41 @@ func (ru *RecordUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.VideoID(); ok {
 		_spec.SetField(record.FieldVideoID, field.TypeString, value)
 	}
+	if value, ok := ru.mutation.OriginalLanguage(); ok {
+		_spec.SetField(record.FieldOriginalLanguage, field.TypeString, value)
+	}
+	if value, ok := ru.mutation.Status(); ok {
+		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
+	}
 	if value, ok := ru.mutation.FileLocation(); ok {
 		_spec.SetField(record.FieldFileLocation, field.TypeString, value)
 	}
 	if ru.mutation.FileLocationCleared() {
 		_spec.ClearField(record.FieldFileLocation, field.TypeString)
 	}
-	if value, ok := ru.mutation.Status(); ok {
-		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
-	}
 	if value, ok := ru.mutation.RunID(); ok {
 		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
 	}
 	if ru.mutation.RunIDCleared() {
 		_spec.ClearField(record.FieldRunID, field.TypeUUID)
+	}
+	if value, ok := ru.mutation.Transcript(); ok {
+		_spec.SetField(record.FieldTranscript, field.TypeString, value)
+	}
+	if ru.mutation.TranscriptCleared() {
+		_spec.ClearField(record.FieldTranscript, field.TypeString)
+	}
+	if value, ok := ru.mutation.TranslationTargetLanguage(); ok {
+		_spec.SetField(record.FieldTranslationTargetLanguage, field.TypeString, value)
+	}
+	if ru.mutation.TranslationTargetLanguageCleared() {
+		_spec.ClearField(record.FieldTranslationTargetLanguage, field.TypeString)
+	}
+	if value, ok := ru.mutation.Translation(); ok {
+		_spec.SetField(record.FieldTranslation, field.TypeString, value)
+	}
+	if ru.mutation.TranslationCleared() {
+		_spec.ClearField(record.FieldTranslation, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -208,6 +295,18 @@ func (ruo *RecordUpdateOne) SetVideoID(s string) *RecordUpdateOne {
 	return ruo
 }
 
+// SetOriginalLanguage sets the "original_language" field.
+func (ruo *RecordUpdateOne) SetOriginalLanguage(s string) *RecordUpdateOne {
+	ruo.mutation.SetOriginalLanguage(s)
+	return ruo
+}
+
+// SetStatus sets the "status" field.
+func (ruo *RecordUpdateOne) SetStatus(r record.Status) *RecordUpdateOne {
+	ruo.mutation.SetStatus(r)
+	return ruo
+}
+
 // SetFileLocation sets the "file_location" field.
 func (ruo *RecordUpdateOne) SetFileLocation(s string) *RecordUpdateOne {
 	ruo.mutation.SetFileLocation(s)
@@ -228,12 +327,6 @@ func (ruo *RecordUpdateOne) ClearFileLocation() *RecordUpdateOne {
 	return ruo
 }
 
-// SetStatus sets the "status" field.
-func (ruo *RecordUpdateOne) SetStatus(r record.Status) *RecordUpdateOne {
-	ruo.mutation.SetStatus(r)
-	return ruo
-}
-
 // SetRunID sets the "run_id" field.
 func (ruo *RecordUpdateOne) SetRunID(u uuid.UUID) *RecordUpdateOne {
 	ruo.mutation.SetRunID(u)
@@ -251,6 +344,66 @@ func (ruo *RecordUpdateOne) SetNillableRunID(u *uuid.UUID) *RecordUpdateOne {
 // ClearRunID clears the value of the "run_id" field.
 func (ruo *RecordUpdateOne) ClearRunID() *RecordUpdateOne {
 	ruo.mutation.ClearRunID()
+	return ruo
+}
+
+// SetTranscript sets the "transcript" field.
+func (ruo *RecordUpdateOne) SetTranscript(s string) *RecordUpdateOne {
+	ruo.mutation.SetTranscript(s)
+	return ruo
+}
+
+// SetNillableTranscript sets the "transcript" field if the given value is not nil.
+func (ruo *RecordUpdateOne) SetNillableTranscript(s *string) *RecordUpdateOne {
+	if s != nil {
+		ruo.SetTranscript(*s)
+	}
+	return ruo
+}
+
+// ClearTranscript clears the value of the "transcript" field.
+func (ruo *RecordUpdateOne) ClearTranscript() *RecordUpdateOne {
+	ruo.mutation.ClearTranscript()
+	return ruo
+}
+
+// SetTranslationTargetLanguage sets the "translation_target_language" field.
+func (ruo *RecordUpdateOne) SetTranslationTargetLanguage(s string) *RecordUpdateOne {
+	ruo.mutation.SetTranslationTargetLanguage(s)
+	return ruo
+}
+
+// SetNillableTranslationTargetLanguage sets the "translation_target_language" field if the given value is not nil.
+func (ruo *RecordUpdateOne) SetNillableTranslationTargetLanguage(s *string) *RecordUpdateOne {
+	if s != nil {
+		ruo.SetTranslationTargetLanguage(*s)
+	}
+	return ruo
+}
+
+// ClearTranslationTargetLanguage clears the value of the "translation_target_language" field.
+func (ruo *RecordUpdateOne) ClearTranslationTargetLanguage() *RecordUpdateOne {
+	ruo.mutation.ClearTranslationTargetLanguage()
+	return ruo
+}
+
+// SetTranslation sets the "translation" field.
+func (ruo *RecordUpdateOne) SetTranslation(s string) *RecordUpdateOne {
+	ruo.mutation.SetTranslation(s)
+	return ruo
+}
+
+// SetNillableTranslation sets the "translation" field if the given value is not nil.
+func (ruo *RecordUpdateOne) SetNillableTranslation(s *string) *RecordUpdateOne {
+	if s != nil {
+		ruo.SetTranslation(*s)
+	}
+	return ruo
+}
+
+// ClearTranslation clears the value of the "translation" field.
+func (ruo *RecordUpdateOne) ClearTranslation() *RecordUpdateOne {
+	ruo.mutation.ClearTranslation()
 	return ruo
 }
 
@@ -311,14 +464,14 @@ func (ruo *RecordUpdateOne) check() error {
 			return &ValidationError{Name: "video_id", err: fmt.Errorf(`ent: validator failed for field "Record.video_id": %w`, err)}
 		}
 	}
-	if v, ok := ruo.mutation.FileLocation(); ok {
-		if err := record.FileLocationValidator(v); err != nil {
-			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
-		}
-	}
 	if v, ok := ruo.mutation.Status(); ok {
 		if err := record.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Record.status": %w`, err)}
+		}
+	}
+	if v, ok := ruo.mutation.FileLocation(); ok {
+		if err := record.FileLocationValidator(v); err != nil {
+			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
 		}
 	}
 	return nil
@@ -359,20 +512,41 @@ func (ruo *RecordUpdateOne) sqlSave(ctx context.Context) (_node *Record, err err
 	if value, ok := ruo.mutation.VideoID(); ok {
 		_spec.SetField(record.FieldVideoID, field.TypeString, value)
 	}
+	if value, ok := ruo.mutation.OriginalLanguage(); ok {
+		_spec.SetField(record.FieldOriginalLanguage, field.TypeString, value)
+	}
+	if value, ok := ruo.mutation.Status(); ok {
+		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
+	}
 	if value, ok := ruo.mutation.FileLocation(); ok {
 		_spec.SetField(record.FieldFileLocation, field.TypeString, value)
 	}
 	if ruo.mutation.FileLocationCleared() {
 		_spec.ClearField(record.FieldFileLocation, field.TypeString)
 	}
-	if value, ok := ruo.mutation.Status(); ok {
-		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
-	}
 	if value, ok := ruo.mutation.RunID(); ok {
 		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
 	}
 	if ruo.mutation.RunIDCleared() {
 		_spec.ClearField(record.FieldRunID, field.TypeUUID)
+	}
+	if value, ok := ruo.mutation.Transcript(); ok {
+		_spec.SetField(record.FieldTranscript, field.TypeString, value)
+	}
+	if ruo.mutation.TranscriptCleared() {
+		_spec.ClearField(record.FieldTranscript, field.TypeString)
+	}
+	if value, ok := ruo.mutation.TranslationTargetLanguage(); ok {
+		_spec.SetField(record.FieldTranslationTargetLanguage, field.TypeString, value)
+	}
+	if ruo.mutation.TranslationTargetLanguageCleared() {
+		_spec.ClearField(record.FieldTranslationTargetLanguage, field.TypeString)
+	}
+	if value, ok := ruo.mutation.Translation(); ok {
+		_spec.SetField(record.FieldTranslation, field.TypeString, value)
+	}
+	if ruo.mutation.TranslationCleared() {
+		_spec.ClearField(record.FieldTranslation, field.TypeString)
 	}
 	_node = &Record{config: ruo.config}
 	_spec.Assign = _node.assignValues

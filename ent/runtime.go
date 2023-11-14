@@ -22,7 +22,7 @@ func init() {
 	// record.VideoIDValidator is a validator for the "video_id" field. It is called by the builders before save.
 	record.VideoIDValidator = recordDescVideoID.Validators[0].(func(string) error)
 	// recordDescFileLocation is the schema descriptor for file_location field.
-	recordDescFileLocation := recordFields[2].Descriptor()
+	recordDescFileLocation := recordFields[4].Descriptor()
 	// record.FileLocationValidator is a validator for the "file_location" field. It is called by the builders before save.
 	record.FileLocationValidator = recordDescFileLocation.Validators[0].(func(string) error)
 }

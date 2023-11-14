@@ -32,6 +32,18 @@ func (rc *RecordCreate) SetVideoID(s string) *RecordCreate {
 	return rc
 }
 
+// SetOriginalLanguage sets the "original_language" field.
+func (rc *RecordCreate) SetOriginalLanguage(s string) *RecordCreate {
+	rc.mutation.SetOriginalLanguage(s)
+	return rc
+}
+
+// SetStatus sets the "status" field.
+func (rc *RecordCreate) SetStatus(r record.Status) *RecordCreate {
+	rc.mutation.SetStatus(r)
+	return rc
+}
+
 // SetFileLocation sets the "file_location" field.
 func (rc *RecordCreate) SetFileLocation(s string) *RecordCreate {
 	rc.mutation.SetFileLocation(s)
@@ -46,12 +58,6 @@ func (rc *RecordCreate) SetNillableFileLocation(s *string) *RecordCreate {
 	return rc
 }
 
-// SetStatus sets the "status" field.
-func (rc *RecordCreate) SetStatus(r record.Status) *RecordCreate {
-	rc.mutation.SetStatus(r)
-	return rc
-}
-
 // SetRunID sets the "run_id" field.
 func (rc *RecordCreate) SetRunID(u uuid.UUID) *RecordCreate {
 	rc.mutation.SetRunID(u)
@@ -62,6 +68,48 @@ func (rc *RecordCreate) SetRunID(u uuid.UUID) *RecordCreate {
 func (rc *RecordCreate) SetNillableRunID(u *uuid.UUID) *RecordCreate {
 	if u != nil {
 		rc.SetRunID(*u)
+	}
+	return rc
+}
+
+// SetTranscript sets the "transcript" field.
+func (rc *RecordCreate) SetTranscript(s string) *RecordCreate {
+	rc.mutation.SetTranscript(s)
+	return rc
+}
+
+// SetNillableTranscript sets the "transcript" field if the given value is not nil.
+func (rc *RecordCreate) SetNillableTranscript(s *string) *RecordCreate {
+	if s != nil {
+		rc.SetTranscript(*s)
+	}
+	return rc
+}
+
+// SetTranslationTargetLanguage sets the "translation_target_language" field.
+func (rc *RecordCreate) SetTranslationTargetLanguage(s string) *RecordCreate {
+	rc.mutation.SetTranslationTargetLanguage(s)
+	return rc
+}
+
+// SetNillableTranslationTargetLanguage sets the "translation_target_language" field if the given value is not nil.
+func (rc *RecordCreate) SetNillableTranslationTargetLanguage(s *string) *RecordCreate {
+	if s != nil {
+		rc.SetTranslationTargetLanguage(*s)
+	}
+	return rc
+}
+
+// SetTranslation sets the "translation" field.
+func (rc *RecordCreate) SetTranslation(s string) *RecordCreate {
+	rc.mutation.SetTranslation(s)
+	return rc
+}
+
+// SetNillableTranslation sets the "translation" field if the given value is not nil.
+func (rc *RecordCreate) SetNillableTranslation(s *string) *RecordCreate {
+	if s != nil {
+		rc.SetTranslation(*s)
 	}
 	return rc
 }
@@ -116,10 +164,8 @@ func (rc *RecordCreate) check() error {
 			return &ValidationError{Name: "video_id", err: fmt.Errorf(`ent: validator failed for field "Record.video_id": %w`, err)}
 		}
 	}
-	if v, ok := rc.mutation.FileLocation(); ok {
-		if err := record.FileLocationValidator(v); err != nil {
-			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
-		}
+	if _, ok := rc.mutation.OriginalLanguage(); !ok {
+		return &ValidationError{Name: "original_language", err: errors.New(`ent: missing required field "Record.original_language"`)}
 	}
 	if _, ok := rc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Record.status"`)}
@@ -127,6 +173,11 @@ func (rc *RecordCreate) check() error {
 	if v, ok := rc.mutation.Status(); ok {
 		if err := record.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Record.status": %w`, err)}
+		}
+	}
+	if v, ok := rc.mutation.FileLocation(); ok {
+		if err := record.FileLocationValidator(v); err != nil {
+			return &ValidationError{Name: "file_location", err: fmt.Errorf(`ent: validator failed for field "Record.file_location": %w`, err)}
 		}
 	}
 	return nil
@@ -163,17 +214,33 @@ func (rc *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 		_spec.SetField(record.FieldVideoID, field.TypeString, value)
 		_node.VideoID = value
 	}
-	if value, ok := rc.mutation.FileLocation(); ok {
-		_spec.SetField(record.FieldFileLocation, field.TypeString, value)
-		_node.FileLocation = value
+	if value, ok := rc.mutation.OriginalLanguage(); ok {
+		_spec.SetField(record.FieldOriginalLanguage, field.TypeString, value)
+		_node.OriginalLanguage = value
 	}
 	if value, ok := rc.mutation.Status(); ok {
 		_spec.SetField(record.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
+	if value, ok := rc.mutation.FileLocation(); ok {
+		_spec.SetField(record.FieldFileLocation, field.TypeString, value)
+		_node.FileLocation = value
+	}
 	if value, ok := rc.mutation.RunID(); ok {
 		_spec.SetField(record.FieldRunID, field.TypeUUID, value)
 		_node.RunID = value
+	}
+	if value, ok := rc.mutation.Transcript(); ok {
+		_spec.SetField(record.FieldTranscript, field.TypeString, value)
+		_node.Transcript = value
+	}
+	if value, ok := rc.mutation.TranslationTargetLanguage(); ok {
+		_spec.SetField(record.FieldTranslationTargetLanguage, field.TypeString, value)
+		_node.TranslationTargetLanguage = value
+	}
+	if value, ok := rc.mutation.Translation(); ok {
+		_spec.SetField(record.FieldTranslation, field.TypeString, value)
+		_node.Translation = value
 	}
 	return _node, _spec
 }

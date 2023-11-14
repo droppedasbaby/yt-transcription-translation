@@ -18,6 +18,7 @@ type Server struct {
 	httpServer *http.Server
 	logger     *zap.Logger
 	runID      uuid.UUID
+	ctx        context.Context
 }
 
 func NewServer(client *ent.Client, parentLogger *zap.Logger) *Server {
@@ -31,16 +32,27 @@ func NewServer(client *ent.Client, parentLogger *zap.Logger) *Server {
 		WriteTimeout: internal.ConnWriteIdleTimeoutS,
 	}
 	server := &Server{client: client, logger: logger, runID: runID, httpServer: httpServer}
+	server.configureRoutes(handler)
+	return server
+}
+
+func (s *Server) configureRoutes(handler *http.ServeMux) {
 	handler.Handle("/start",
 		internal.ChainMiddleware(
-			http.HandlerFunc(server.startHandler),
+			http.HandlerFunc(s.startHandler),
 			internal.MethodChecker(http.MethodPost),
-			internal.JSONHeadersMiddleware,
-			internal.LoggingMiddleware(logger),
+			internal.JSONHeadersMiddleware(),
+			internal.LoggingMiddleware(s.logger),
 		),
 	)
-
-	return server
+	handler.Handle("/results",
+		internal.ChainMiddleware(
+			http.HandlerFunc(s.resultsHandler),
+			internal.MethodChecker(http.MethodPost),
+			internal.JSONHeadersMiddleware(),
+			internal.LoggingMiddleware(s.logger),
+		),
+	)
 }
 
 func (s *Server) ManagerServerLifecycle(ctx context.Context) {

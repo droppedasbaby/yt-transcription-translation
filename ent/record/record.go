@@ -17,12 +17,20 @@ const (
 	FieldVideoURL = "video_url"
 	// FieldVideoID holds the string denoting the video_id field in the database.
 	FieldVideoID = "video_id"
-	// FieldFileLocation holds the string denoting the file_location field in the database.
-	FieldFileLocation = "file_location"
+	// FieldOriginalLanguage holds the string denoting the original_language field in the database.
+	FieldOriginalLanguage = "original_language"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldFileLocation holds the string denoting the file_location field in the database.
+	FieldFileLocation = "file_location"
 	// FieldRunID holds the string denoting the run_id field in the database.
 	FieldRunID = "run_id"
+	// FieldTranscript holds the string denoting the transcript field in the database.
+	FieldTranscript = "transcript"
+	// FieldTranslationTargetLanguage holds the string denoting the translation_target_language field in the database.
+	FieldTranslationTargetLanguage = "translation_target_language"
+	// FieldTranslation holds the string denoting the translation field in the database.
+	FieldTranslation = "translation"
 	// Table holds the table name of the record in the database.
 	Table = "records"
 )
@@ -32,9 +40,13 @@ var Columns = []string{
 	FieldID,
 	FieldVideoURL,
 	FieldVideoID,
-	FieldFileLocation,
+	FieldOriginalLanguage,
 	FieldStatus,
+	FieldFileLocation,
 	FieldRunID,
+	FieldTranscript,
+	FieldTranslationTargetLanguage,
+	FieldTranslation,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -65,6 +77,7 @@ const (
 	StatusDownloaded  Status = "downloaded"
 	StatusTranscribed Status = "transcribed"
 	StatusTranslated  Status = "translated"
+	StatusError       Status = "error"
 )
 
 func (s Status) String() string {
@@ -74,7 +87,7 @@ func (s Status) String() string {
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s Status) error {
 	switch s {
-	case StatusDownloading, StatusDownloaded, StatusTranscribed, StatusTranslated:
+	case StatusDownloading, StatusDownloaded, StatusTranscribed, StatusTranslated, StatusError:
 		return nil
 	default:
 		return fmt.Errorf("record: invalid enum value for status field: %q", s)
@@ -99,9 +112,9 @@ func ByVideoID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVideoID, opts...).ToFunc()
 }
 
-// ByFileLocation orders the results by the file_location field.
-func ByFileLocation(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFileLocation, opts...).ToFunc()
+// ByOriginalLanguage orders the results by the original_language field.
+func ByOriginalLanguage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOriginalLanguage, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
@@ -109,7 +122,27 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
+// ByFileLocation orders the results by the file_location field.
+func ByFileLocation(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFileLocation, opts...).ToFunc()
+}
+
 // ByRunID orders the results by the run_id field.
 func ByRunID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRunID, opts...).ToFunc()
+}
+
+// ByTranscript orders the results by the transcript field.
+func ByTranscript(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTranscript, opts...).ToFunc()
+}
+
+// ByTranslationTargetLanguage orders the results by the translation_target_language field.
+func ByTranslationTargetLanguage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTranslationTargetLanguage, opts...).ToFunc()
+}
+
+// ByTranslation orders the results by the translation field.
+func ByTranslation(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTranslation, opts...).ToFunc()
 }

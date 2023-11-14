@@ -88,3 +88,8 @@ func DownloadVideo(ID string) (string, int64, error) {
 
 	return file.Name(), length, nil
 }
+
+func TranscribeVideo() error {
+	return nil
+}
+

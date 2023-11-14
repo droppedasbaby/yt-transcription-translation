@@ -21,12 +21,20 @@ type Record struct {
 	VideoURL string `json:"video_url,omitempty"`
 	// VideoID holds the value of the "video_id" field.
 	VideoID string `json:"video_id,omitempty"`
-	// FileLocation holds the value of the "file_location" field.
-	FileLocation string `json:"file_location,omitempty"`
+	// OriginalLanguage holds the value of the "original_language" field.
+	OriginalLanguage string `json:"original_language,omitempty"`
 	// Status holds the value of the "status" field.
 	Status record.Status `json:"status,omitempty"`
+	// FileLocation holds the value of the "file_location" field.
+	FileLocation string `json:"file_location,omitempty"`
 	// RunID holds the value of the "run_id" field.
-	RunID        uuid.UUID `json:"run_id,omitempty"`
+	RunID uuid.UUID `json:"run_id,omitempty"`
+	// Transcript holds the value of the "transcript" field.
+	Transcript string `json:"transcript,omitempty"`
+	// TranslationTargetLanguage holds the value of the "translation_target_language" field.
+	TranslationTargetLanguage string `json:"translation_target_language,omitempty"`
+	// Translation holds the value of the "translation" field.
+	Translation  string `json:"translation,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -37,7 +45,7 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case record.FieldID:
 			values[i] = new(sql.NullInt64)
-		case record.FieldVideoURL, record.FieldVideoID, record.FieldFileLocation, record.FieldStatus:
+		case record.FieldVideoURL, record.FieldVideoID, record.FieldOriginalLanguage, record.FieldStatus, record.FieldFileLocation, record.FieldTranscript, record.FieldTranslationTargetLanguage, record.FieldTranslation:
 			values[i] = new(sql.NullString)
 		case record.FieldRunID:
 			values[i] = new(uuid.UUID)
@@ -74,11 +82,11 @@ func (r *Record) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.VideoID = value.String
 			}
-		case record.FieldFileLocation:
+		case record.FieldOriginalLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field file_location", values[i])
+				return fmt.Errorf("unexpected type %T for field original_language", values[i])
 			} else if value.Valid {
-				r.FileLocation = value.String
+				r.OriginalLanguage = value.String
 			}
 		case record.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -86,11 +94,35 @@ func (r *Record) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.Status = record.Status(value.String)
 			}
+		case record.FieldFileLocation:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field file_location", values[i])
+			} else if value.Valid {
+				r.FileLocation = value.String
+			}
 		case record.FieldRunID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field run_id", values[i])
 			} else if value != nil {
 				r.RunID = *value
+			}
+		case record.FieldTranscript:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field transcript", values[i])
+			} else if value.Valid {
+				r.Transcript = value.String
+			}
+		case record.FieldTranslationTargetLanguage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field translation_target_language", values[i])
+			} else if value.Valid {
+				r.TranslationTargetLanguage = value.String
+			}
+		case record.FieldTranslation:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field translation", values[i])
+			} else if value.Valid {
+				r.Translation = value.String
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
@@ -134,14 +166,26 @@ func (r *Record) String() string {
 	builder.WriteString("video_id=")
 	builder.WriteString(r.VideoID)
 	builder.WriteString(", ")
-	builder.WriteString("file_location=")
-	builder.WriteString(r.FileLocation)
+	builder.WriteString("original_language=")
+	builder.WriteString(r.OriginalLanguage)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", r.Status))
 	builder.WriteString(", ")
+	builder.WriteString("file_location=")
+	builder.WriteString(r.FileLocation)
+	builder.WriteString(", ")
 	builder.WriteString("run_id=")
 	builder.WriteString(fmt.Sprintf("%v", r.RunID))
+	builder.WriteString(", ")
+	builder.WriteString("transcript=")
+	builder.WriteString(r.Transcript)
+	builder.WriteString(", ")
+	builder.WriteString("translation_target_language=")
+	builder.WriteString(r.TranslationTargetLanguage)
+	builder.WriteString(", ")
+	builder.WriteString("translation=")
+	builder.WriteString(r.Translation)
 	builder.WriteByte(')')
 	return builder.String()
 }

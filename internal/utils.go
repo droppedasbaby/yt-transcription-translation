@@ -49,16 +49,16 @@ func PanicIfError(err error, logger *zap.Logger) {
 	}
 }
 
-type ChainMiddlewareInputFunc func(http.Handler) http.Handler
+type ChainMiddlewareFunc func(http.Handler) http.Handler
 
-func ChainMiddleware(h http.Handler, middlewares ...ChainMiddlewareInputFunc) http.Handler {
+func ChainMiddleware(h http.Handler, middlewares ...ChainMiddlewareFunc) http.Handler {
 	for _, middleware := range middlewares {
 		h = middleware(h)
 	}
 	return h
 }
 
-func MethodChecker(allowedMethods ...string) func(http.Handler) http.Handler {
+func MethodChecker(allowedMethods ...string) ChainMiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			for _, method := range allowedMethods {
@@ -72,7 +72,7 @@ func MethodChecker(allowedMethods ...string) func(http.Handler) http.Handler {
 	}
 }
 
-func LoggingMiddleware(logger *zap.Logger) func(http.Handler) http.Handler {
+func LoggingMiddleware(logger *zap.Logger) ChainMiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			requestID := uuid.New()
@@ -91,9 +91,11 @@ func LoggingMiddleware(logger *zap.Logger) func(http.Handler) http.Handler {
 	}
 }
 
-func JSONHeadersMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
-	})
+func JSONHeadersMiddleware() ChainMiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			next.ServeHTTP(w, r)
+		})
+	}
 }

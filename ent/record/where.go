@@ -63,6 +63,11 @@ func VideoID(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldVideoID, v))
 }
 
+// OriginalLanguage applies equality check predicate on the "original_language" field. It's identical to OriginalLanguageEQ.
+func OriginalLanguage(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldOriginalLanguage, v))
+}
+
 // FileLocation applies equality check predicate on the "file_location" field. It's identical to FileLocationEQ.
 func FileLocation(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldFileLocation, v))
@@ -71,6 +76,21 @@ func FileLocation(v string) predicate.Record {
 // RunID applies equality check predicate on the "run_id" field. It's identical to RunIDEQ.
 func RunID(v uuid.UUID) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldRunID, v))
+}
+
+// Transcript applies equality check predicate on the "transcript" field. It's identical to TranscriptEQ.
+func Transcript(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranscript, v))
+}
+
+// TranslationTargetLanguage applies equality check predicate on the "translation_target_language" field. It's identical to TranslationTargetLanguageEQ.
+func TranslationTargetLanguage(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranslationTargetLanguage, v))
+}
+
+// Translation applies equality check predicate on the "translation" field. It's identical to TranslationEQ.
+func Translation(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranslation, v))
 }
 
 // VideoURLEQ applies the EQ predicate on the "video_url" field.
@@ -203,6 +223,91 @@ func VideoIDContainsFold(v string) predicate.Record {
 	return predicate.Record(sql.FieldContainsFold(FieldVideoID, v))
 }
 
+// OriginalLanguageEQ applies the EQ predicate on the "original_language" field.
+func OriginalLanguageEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageNEQ applies the NEQ predicate on the "original_language" field.
+func OriginalLanguageNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageIn applies the In predicate on the "original_language" field.
+func OriginalLanguageIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldOriginalLanguage, vs...))
+}
+
+// OriginalLanguageNotIn applies the NotIn predicate on the "original_language" field.
+func OriginalLanguageNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldOriginalLanguage, vs...))
+}
+
+// OriginalLanguageGT applies the GT predicate on the "original_language" field.
+func OriginalLanguageGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageGTE applies the GTE predicate on the "original_language" field.
+func OriginalLanguageGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageLT applies the LT predicate on the "original_language" field.
+func OriginalLanguageLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageLTE applies the LTE predicate on the "original_language" field.
+func OriginalLanguageLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageContains applies the Contains predicate on the "original_language" field.
+func OriginalLanguageContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageHasPrefix applies the HasPrefix predicate on the "original_language" field.
+func OriginalLanguageHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageHasSuffix applies the HasSuffix predicate on the "original_language" field.
+func OriginalLanguageHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageEqualFold applies the EqualFold predicate on the "original_language" field.
+func OriginalLanguageEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldOriginalLanguage, v))
+}
+
+// OriginalLanguageContainsFold applies the ContainsFold predicate on the "original_language" field.
+func OriginalLanguageContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldOriginalLanguage, v))
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v Status) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldStatus, v))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v Status) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldStatus, v))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...Status) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldStatus, vs...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...Status) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldStatus, vs...))
+}
+
 // FileLocationEQ applies the EQ predicate on the "file_location" field.
 func FileLocationEQ(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldFileLocation, v))
@@ -278,26 +383,6 @@ func FileLocationContainsFold(v string) predicate.Record {
 	return predicate.Record(sql.FieldContainsFold(FieldFileLocation, v))
 }
 
-// StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v Status) predicate.Record {
-	return predicate.Record(sql.FieldEQ(FieldStatus, v))
-}
-
-// StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v Status) predicate.Record {
-	return predicate.Record(sql.FieldNEQ(FieldStatus, v))
-}
-
-// StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...Status) predicate.Record {
-	return predicate.Record(sql.FieldIn(FieldStatus, vs...))
-}
-
-// StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...Status) predicate.Record {
-	return predicate.Record(sql.FieldNotIn(FieldStatus, vs...))
-}
-
 // RunIDEQ applies the EQ predicate on the "run_id" field.
 func RunIDEQ(v uuid.UUID) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldRunID, v))
@@ -346,6 +431,231 @@ func RunIDIsNil() predicate.Record {
 // RunIDNotNil applies the NotNil predicate on the "run_id" field.
 func RunIDNotNil() predicate.Record {
 	return predicate.Record(sql.FieldNotNull(FieldRunID))
+}
+
+// TranscriptEQ applies the EQ predicate on the "transcript" field.
+func TranscriptEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranscript, v))
+}
+
+// TranscriptNEQ applies the NEQ predicate on the "transcript" field.
+func TranscriptNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldTranscript, v))
+}
+
+// TranscriptIn applies the In predicate on the "transcript" field.
+func TranscriptIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldTranscript, vs...))
+}
+
+// TranscriptNotIn applies the NotIn predicate on the "transcript" field.
+func TranscriptNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldTranscript, vs...))
+}
+
+// TranscriptGT applies the GT predicate on the "transcript" field.
+func TranscriptGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldTranscript, v))
+}
+
+// TranscriptGTE applies the GTE predicate on the "transcript" field.
+func TranscriptGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldTranscript, v))
+}
+
+// TranscriptLT applies the LT predicate on the "transcript" field.
+func TranscriptLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldTranscript, v))
+}
+
+// TranscriptLTE applies the LTE predicate on the "transcript" field.
+func TranscriptLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldTranscript, v))
+}
+
+// TranscriptContains applies the Contains predicate on the "transcript" field.
+func TranscriptContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldTranscript, v))
+}
+
+// TranscriptHasPrefix applies the HasPrefix predicate on the "transcript" field.
+func TranscriptHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldTranscript, v))
+}
+
+// TranscriptHasSuffix applies the HasSuffix predicate on the "transcript" field.
+func TranscriptHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldTranscript, v))
+}
+
+// TranscriptIsNil applies the IsNil predicate on the "transcript" field.
+func TranscriptIsNil() predicate.Record {
+	return predicate.Record(sql.FieldIsNull(FieldTranscript))
+}
+
+// TranscriptNotNil applies the NotNil predicate on the "transcript" field.
+func TranscriptNotNil() predicate.Record {
+	return predicate.Record(sql.FieldNotNull(FieldTranscript))
+}
+
+// TranscriptEqualFold applies the EqualFold predicate on the "transcript" field.
+func TranscriptEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldTranscript, v))
+}
+
+// TranscriptContainsFold applies the ContainsFold predicate on the "transcript" field.
+func TranscriptContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldTranscript, v))
+}
+
+// TranslationTargetLanguageEQ applies the EQ predicate on the "translation_target_language" field.
+func TranslationTargetLanguageEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageNEQ applies the NEQ predicate on the "translation_target_language" field.
+func TranslationTargetLanguageNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageIn applies the In predicate on the "translation_target_language" field.
+func TranslationTargetLanguageIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldTranslationTargetLanguage, vs...))
+}
+
+// TranslationTargetLanguageNotIn applies the NotIn predicate on the "translation_target_language" field.
+func TranslationTargetLanguageNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldTranslationTargetLanguage, vs...))
+}
+
+// TranslationTargetLanguageGT applies the GT predicate on the "translation_target_language" field.
+func TranslationTargetLanguageGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageGTE applies the GTE predicate on the "translation_target_language" field.
+func TranslationTargetLanguageGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageLT applies the LT predicate on the "translation_target_language" field.
+func TranslationTargetLanguageLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageLTE applies the LTE predicate on the "translation_target_language" field.
+func TranslationTargetLanguageLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageContains applies the Contains predicate on the "translation_target_language" field.
+func TranslationTargetLanguageContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageHasPrefix applies the HasPrefix predicate on the "translation_target_language" field.
+func TranslationTargetLanguageHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageHasSuffix applies the HasSuffix predicate on the "translation_target_language" field.
+func TranslationTargetLanguageHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageIsNil applies the IsNil predicate on the "translation_target_language" field.
+func TranslationTargetLanguageIsNil() predicate.Record {
+	return predicate.Record(sql.FieldIsNull(FieldTranslationTargetLanguage))
+}
+
+// TranslationTargetLanguageNotNil applies the NotNil predicate on the "translation_target_language" field.
+func TranslationTargetLanguageNotNil() predicate.Record {
+	return predicate.Record(sql.FieldNotNull(FieldTranslationTargetLanguage))
+}
+
+// TranslationTargetLanguageEqualFold applies the EqualFold predicate on the "translation_target_language" field.
+func TranslationTargetLanguageEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationTargetLanguageContainsFold applies the ContainsFold predicate on the "translation_target_language" field.
+func TranslationTargetLanguageContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldTranslationTargetLanguage, v))
+}
+
+// TranslationEQ applies the EQ predicate on the "translation" field.
+func TranslationEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldTranslation, v))
+}
+
+// TranslationNEQ applies the NEQ predicate on the "translation" field.
+func TranslationNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldTranslation, v))
+}
+
+// TranslationIn applies the In predicate on the "translation" field.
+func TranslationIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldTranslation, vs...))
+}
+
+// TranslationNotIn applies the NotIn predicate on the "translation" field.
+func TranslationNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldTranslation, vs...))
+}
+
+// TranslationGT applies the GT predicate on the "translation" field.
+func TranslationGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldTranslation, v))
+}
+
+// TranslationGTE applies the GTE predicate on the "translation" field.
+func TranslationGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldTranslation, v))
+}
+
+// TranslationLT applies the LT predicate on the "translation" field.
+func TranslationLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldTranslation, v))
+}
+
+// TranslationLTE applies the LTE predicate on the "translation" field.
+func TranslationLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldTranslation, v))
+}
+
+// TranslationContains applies the Contains predicate on the "translation" field.
+func TranslationContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldTranslation, v))
+}
+
+// TranslationHasPrefix applies the HasPrefix predicate on the "translation" field.
+func TranslationHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldTranslation, v))
+}
+
+// TranslationHasSuffix applies the HasSuffix predicate on the "translation" field.
+func TranslationHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldTranslation, v))
+}
+
+// TranslationIsNil applies the IsNil predicate on the "translation" field.
+func TranslationIsNil() predicate.Record {
+	return predicate.Record(sql.FieldIsNull(FieldTranslation))
+}
+
+// TranslationNotNil applies the NotNil predicate on the "translation" field.
+func TranslationNotNil() predicate.Record {
+	return predicate.Record(sql.FieldNotNull(FieldTranslation))
+}
+
+// TranslationEqualFold applies the EqualFold predicate on the "translation" field.
+func TranslationEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldTranslation, v))
+}
+
+// TranslationContainsFold applies the ContainsFold predicate on the "translation" field.
+func TranslationContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldTranslation, v))
 }
 
 // And groups predicates with the AND operator between them.

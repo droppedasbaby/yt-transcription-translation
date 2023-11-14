@@ -30,18 +30,22 @@ const (
 // RecordMutation represents an operation that mutates the Record nodes in the graph.
 type RecordMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	video_url     *string
-	video_id      *string
-	file_location *string
-	status        *record.Status
-	run_id        *uuid.UUID
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Record, error)
-	predicates    []predicate.Record
+	op                          Op
+	typ                         string
+	id                          *int
+	video_url                   *string
+	video_id                    *string
+	original_language           *string
+	status                      *record.Status
+	file_location               *string
+	run_id                      *uuid.UUID
+	transcript                  *string
+	translation_target_language *string
+	translation                 *string
+	clearedFields               map[string]struct{}
+	done                        bool
+	oldValue                    func(context.Context) (*Record, error)
+	predicates                  []predicate.Record
 }
 
 var _ ent.Mutation = (*RecordMutation)(nil)
@@ -214,6 +218,78 @@ func (m *RecordMutation) ResetVideoID() {
 	m.video_id = nil
 }
 
+// SetOriginalLanguage sets the "original_language" field.
+func (m *RecordMutation) SetOriginalLanguage(s string) {
+	m.original_language = &s
+}
+
+// OriginalLanguage returns the value of the "original_language" field in the mutation.
+func (m *RecordMutation) OriginalLanguage() (r string, exists bool) {
+	v := m.original_language
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOriginalLanguage returns the old "original_language" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldOriginalLanguage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOriginalLanguage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOriginalLanguage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOriginalLanguage: %w", err)
+	}
+	return oldValue.OriginalLanguage, nil
+}
+
+// ResetOriginalLanguage resets all changes to the "original_language" field.
+func (m *RecordMutation) ResetOriginalLanguage() {
+	m.original_language = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *RecordMutation) SetStatus(r record.Status) {
+	m.status = &r
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *RecordMutation) Status() (r record.Status, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldStatus(ctx context.Context) (v record.Status, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *RecordMutation) ResetStatus() {
+	m.status = nil
+}
+
 // SetFileLocation sets the "file_location" field.
 func (m *RecordMutation) SetFileLocation(s string) {
 	m.file_location = &s
@@ -261,42 +337,6 @@ func (m *RecordMutation) FileLocationCleared() bool {
 func (m *RecordMutation) ResetFileLocation() {
 	m.file_location = nil
 	delete(m.clearedFields, record.FieldFileLocation)
-}
-
-// SetStatus sets the "status" field.
-func (m *RecordMutation) SetStatus(r record.Status) {
-	m.status = &r
-}
-
-// Status returns the value of the "status" field in the mutation.
-func (m *RecordMutation) Status() (r record.Status, exists bool) {
-	v := m.status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStatus returns the old "status" field's value of the Record entity.
-// If the Record object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecordMutation) OldStatus(ctx context.Context) (v record.Status, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
-	}
-	return oldValue.Status, nil
-}
-
-// ResetStatus resets all changes to the "status" field.
-func (m *RecordMutation) ResetStatus() {
-	m.status = nil
 }
 
 // SetRunID sets the "run_id" field.
@@ -348,6 +388,153 @@ func (m *RecordMutation) ResetRunID() {
 	delete(m.clearedFields, record.FieldRunID)
 }
 
+// SetTranscript sets the "transcript" field.
+func (m *RecordMutation) SetTranscript(s string) {
+	m.transcript = &s
+}
+
+// Transcript returns the value of the "transcript" field in the mutation.
+func (m *RecordMutation) Transcript() (r string, exists bool) {
+	v := m.transcript
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTranscript returns the old "transcript" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldTranscript(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTranscript is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTranscript requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTranscript: %w", err)
+	}
+	return oldValue.Transcript, nil
+}
+
+// ClearTranscript clears the value of the "transcript" field.
+func (m *RecordMutation) ClearTranscript() {
+	m.transcript = nil
+	m.clearedFields[record.FieldTranscript] = struct{}{}
+}
+
+// TranscriptCleared returns if the "transcript" field was cleared in this mutation.
+func (m *RecordMutation) TranscriptCleared() bool {
+	_, ok := m.clearedFields[record.FieldTranscript]
+	return ok
+}
+
+// ResetTranscript resets all changes to the "transcript" field.
+func (m *RecordMutation) ResetTranscript() {
+	m.transcript = nil
+	delete(m.clearedFields, record.FieldTranscript)
+}
+
+// SetTranslationTargetLanguage sets the "translation_target_language" field.
+func (m *RecordMutation) SetTranslationTargetLanguage(s string) {
+	m.translation_target_language = &s
+}
+
+// TranslationTargetLanguage returns the value of the "translation_target_language" field in the mutation.
+func (m *RecordMutation) TranslationTargetLanguage() (r string, exists bool) {
+	v := m.translation_target_language
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTranslationTargetLanguage returns the old "translation_target_language" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldTranslationTargetLanguage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTranslationTargetLanguage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTranslationTargetLanguage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTranslationTargetLanguage: %w", err)
+	}
+	return oldValue.TranslationTargetLanguage, nil
+}
+
+// ClearTranslationTargetLanguage clears the value of the "translation_target_language" field.
+func (m *RecordMutation) ClearTranslationTargetLanguage() {
+	m.translation_target_language = nil
+	m.clearedFields[record.FieldTranslationTargetLanguage] = struct{}{}
+}
+
+// TranslationTargetLanguageCleared returns if the "translation_target_language" field was cleared in this mutation.
+func (m *RecordMutation) TranslationTargetLanguageCleared() bool {
+	_, ok := m.clearedFields[record.FieldTranslationTargetLanguage]
+	return ok
+}
+
+// ResetTranslationTargetLanguage resets all changes to the "translation_target_language" field.
+func (m *RecordMutation) ResetTranslationTargetLanguage() {
+	m.translation_target_language = nil
+	delete(m.clearedFields, record.FieldTranslationTargetLanguage)
+}
+
+// SetTranslation sets the "translation" field.
+func (m *RecordMutation) SetTranslation(s string) {
+	m.translation = &s
+}
+
+// Translation returns the value of the "translation" field in the mutation.
+func (m *RecordMutation) Translation() (r string, exists bool) {
+	v := m.translation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTranslation returns the old "translation" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldTranslation(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTranslation is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTranslation requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTranslation: %w", err)
+	}
+	return oldValue.Translation, nil
+}
+
+// ClearTranslation clears the value of the "translation" field.
+func (m *RecordMutation) ClearTranslation() {
+	m.translation = nil
+	m.clearedFields[record.FieldTranslation] = struct{}{}
+}
+
+// TranslationCleared returns if the "translation" field was cleared in this mutation.
+func (m *RecordMutation) TranslationCleared() bool {
+	_, ok := m.clearedFields[record.FieldTranslation]
+	return ok
+}
+
+// ResetTranslation resets all changes to the "translation" field.
+func (m *RecordMutation) ResetTranslation() {
+	m.translation = nil
+	delete(m.clearedFields, record.FieldTranslation)
+}
+
 // Where appends a list predicates to the RecordMutation builder.
 func (m *RecordMutation) Where(ps ...predicate.Record) {
 	m.predicates = append(m.predicates, ps...)
@@ -382,21 +569,33 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 9)
 	if m.video_url != nil {
 		fields = append(fields, record.FieldVideoURL)
 	}
 	if m.video_id != nil {
 		fields = append(fields, record.FieldVideoID)
 	}
-	if m.file_location != nil {
-		fields = append(fields, record.FieldFileLocation)
+	if m.original_language != nil {
+		fields = append(fields, record.FieldOriginalLanguage)
 	}
 	if m.status != nil {
 		fields = append(fields, record.FieldStatus)
 	}
+	if m.file_location != nil {
+		fields = append(fields, record.FieldFileLocation)
+	}
 	if m.run_id != nil {
 		fields = append(fields, record.FieldRunID)
+	}
+	if m.transcript != nil {
+		fields = append(fields, record.FieldTranscript)
+	}
+	if m.translation_target_language != nil {
+		fields = append(fields, record.FieldTranslationTargetLanguage)
+	}
+	if m.translation != nil {
+		fields = append(fields, record.FieldTranslation)
 	}
 	return fields
 }
@@ -410,12 +609,20 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.VideoURL()
 	case record.FieldVideoID:
 		return m.VideoID()
-	case record.FieldFileLocation:
-		return m.FileLocation()
+	case record.FieldOriginalLanguage:
+		return m.OriginalLanguage()
 	case record.FieldStatus:
 		return m.Status()
+	case record.FieldFileLocation:
+		return m.FileLocation()
 	case record.FieldRunID:
 		return m.RunID()
+	case record.FieldTranscript:
+		return m.Transcript()
+	case record.FieldTranslationTargetLanguage:
+		return m.TranslationTargetLanguage()
+	case record.FieldTranslation:
+		return m.Translation()
 	}
 	return nil, false
 }
@@ -429,12 +636,20 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldVideoURL(ctx)
 	case record.FieldVideoID:
 		return m.OldVideoID(ctx)
-	case record.FieldFileLocation:
-		return m.OldFileLocation(ctx)
+	case record.FieldOriginalLanguage:
+		return m.OldOriginalLanguage(ctx)
 	case record.FieldStatus:
 		return m.OldStatus(ctx)
+	case record.FieldFileLocation:
+		return m.OldFileLocation(ctx)
 	case record.FieldRunID:
 		return m.OldRunID(ctx)
+	case record.FieldTranscript:
+		return m.OldTranscript(ctx)
+	case record.FieldTranslationTargetLanguage:
+		return m.OldTranslationTargetLanguage(ctx)
+	case record.FieldTranslation:
+		return m.OldTranslation(ctx)
 	}
 	return nil, fmt.Errorf("unknown Record field %s", name)
 }
@@ -458,12 +673,12 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetVideoID(v)
 		return nil
-	case record.FieldFileLocation:
+	case record.FieldOriginalLanguage:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetFileLocation(v)
+		m.SetOriginalLanguage(v)
 		return nil
 	case record.FieldStatus:
 		v, ok := value.(record.Status)
@@ -472,12 +687,40 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
+	case record.FieldFileLocation:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFileLocation(v)
+		return nil
 	case record.FieldRunID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRunID(v)
+		return nil
+	case record.FieldTranscript:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTranscript(v)
+		return nil
+	case record.FieldTranslationTargetLanguage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTranslationTargetLanguage(v)
+		return nil
+	case record.FieldTranslation:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTranslation(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Record field %s", name)
@@ -515,6 +758,15 @@ func (m *RecordMutation) ClearedFields() []string {
 	if m.FieldCleared(record.FieldRunID) {
 		fields = append(fields, record.FieldRunID)
 	}
+	if m.FieldCleared(record.FieldTranscript) {
+		fields = append(fields, record.FieldTranscript)
+	}
+	if m.FieldCleared(record.FieldTranslationTargetLanguage) {
+		fields = append(fields, record.FieldTranslationTargetLanguage)
+	}
+	if m.FieldCleared(record.FieldTranslation) {
+		fields = append(fields, record.FieldTranslation)
+	}
 	return fields
 }
 
@@ -535,6 +787,15 @@ func (m *RecordMutation) ClearField(name string) error {
 	case record.FieldRunID:
 		m.ClearRunID()
 		return nil
+	case record.FieldTranscript:
+		m.ClearTranscript()
+		return nil
+	case record.FieldTranslationTargetLanguage:
+		m.ClearTranslationTargetLanguage()
+		return nil
+	case record.FieldTranslation:
+		m.ClearTranslation()
+		return nil
 	}
 	return fmt.Errorf("unknown Record nullable field %s", name)
 }
@@ -549,14 +810,26 @@ func (m *RecordMutation) ResetField(name string) error {
 	case record.FieldVideoID:
 		m.ResetVideoID()
 		return nil
-	case record.FieldFileLocation:
-		m.ResetFileLocation()
+	case record.FieldOriginalLanguage:
+		m.ResetOriginalLanguage()
 		return nil
 	case record.FieldStatus:
 		m.ResetStatus()
 		return nil
+	case record.FieldFileLocation:
+		m.ResetFileLocation()
+		return nil
 	case record.FieldRunID:
 		m.ResetRunID()
+		return nil
+	case record.FieldTranscript:
+		m.ResetTranscript()
+		return nil
+	case record.FieldTranslationTargetLanguage:
+		m.ResetTranslationTargetLanguage()
+		return nil
+	case record.FieldTranslation:
+		m.ResetTranslation()
 		return nil
 	}
 	return fmt.Errorf("unknown Record field %s", name)

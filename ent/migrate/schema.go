@@ -13,9 +13,13 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "video_url", Type: field.TypeString, Unique: true, Size: 2147483647},
 		{Name: "video_id", Type: field.TypeString, Unique: true, Size: 2147483647},
+		{Name: "original_language", Type: field.TypeString, Size: 2147483647},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"downloading", "downloaded", "transcribed", "translated", "error"}},
 		{Name: "file_location", Type: field.TypeString, Nullable: true, Size: 2147483647},
-		{Name: "status", Type: field.TypeEnum, Enums: []string{"downloading", "downloaded", "transcribed", "translated"}},
 		{Name: "run_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "transcript", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "translation_target_language", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "translation", Type: field.TypeString, Nullable: true, Size: 2147483647},
 	}
 	// RecordsTable holds the schema information for the "records" table.
 	RecordsTable = &schema.Table{

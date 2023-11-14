@@ -16,15 +16,20 @@ func (Record) Fields() []ent.Field {
 	return []ent.Field{
 		field.Text("video_url").NotEmpty().Unique(),
 		field.Text("video_id").NotEmpty().Unique(),
-		field.Text("file_location").NotEmpty().Optional(),
+		field.Text("original_language"),
 		field.Enum("status").
 			NamedValues(
 				"Downloading", "downloading",
 				"Downloaded", "downloaded",
 				"Transcribed", "transcribed",
 				"Translated", "translated",
+				"Error", "error",
 			),
+		field.Text("file_location").NotEmpty().Optional(),
 		field.UUID("run_id", uuid.UUID{}).Optional(),
+		field.Text("transcript").Optional(),
+		field.Text("translation_target_language").Optional(),
+		field.Text("translation").Optional(),
 	}
 }
 
