@@ -4,12 +4,9 @@ import (
 	"context"
 	"sync"
 
-	"entgo.io/ent/dialect"
-	"go.uber.org/zap"
-
-	"github.com/GrewalAS/yt-transcription-translation/ent"
 	"github.com/GrewalAS/yt-transcription-translation/internal"
 	"github.com/GrewalAS/yt-transcription-translation/server"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -29,20 +26,8 @@ func orchestrateServer(wg *sync.WaitGroup, parentLogger *zap.Logger) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	logger.Info("Initializing db connection...")
-	dbPath, err := internal.CreateDirAndGetFullPath(internal.DBFileName)
-	if err != nil {
-		internal.PanicIfError(err, logger)
-	}
-	client, err := ent.Open(dialect.SQLite, dbPath+"?_fk=1")
-	if err != nil {
-		internal.PanicIfError(err, logger)
-	}
-	if err = client.Schema.Create(ctx); err != nil {
-		internal.PanicIfError(err, logger)
-	}
-
 	logger.Info("Starting server...")
-	s := server.NewServer(client, logger)
+	s := server.NewServer(logger)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

@@ -6,22 +6,19 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	_ "github.com/mattn/go-sqlite3" // sqlite3 driver
 	"go.uber.org/zap"
 
-	"github.com/GrewalAS/yt-transcription-translation/ent"
 	"github.com/GrewalAS/yt-transcription-translation/internal"
 )
 
 type Server struct {
-	client     *ent.Client
 	httpServer *http.Server
 	logger     *zap.Logger
 	runID      uuid.UUID
 	ctx        context.Context
 }
 
-func NewServer(client *ent.Client, parentLogger *zap.Logger) *Server {
+func NewServer(parentLogger *zap.Logger) *Server {
 	logger := parentLogger.With(zap.String("component", "Server"))
 	runID := uuid.New()
 	handler := http.NewServeMux()
@@ -31,7 +28,7 @@ func NewServer(client *ent.Client, parentLogger *zap.Logger) *Server {
 		ReadTimeout:  internal.ConnReadIdleTimeoutS,
 		WriteTimeout: internal.ConnWriteIdleTimeoutS,
 	}
-	server := &Server{client: client, logger: logger, runID: runID, httpServer: httpServer}
+	server := &Server{logger: logger, runID: runID, httpServer: httpServer}
 	server.configureRoutes(handler)
 	return server
 }

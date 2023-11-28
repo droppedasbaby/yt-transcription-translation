@@ -1,6 +1,14 @@
 package types
 
-import "github.com/GrewalAS/yt-transcription-translation/ent/record"
+type Status string
+
+const (
+	StatusDownloading Status = "downloading"
+	StatusDownloaded  Status = "downloaded"
+	StatusTranscribed Status = "transcribed"
+	StatusTranslated  Status = "translated"
+	StatusError       Status = "error"
+)
 
 type RecordPostBody struct {
 	URL              string `json:"url"`
@@ -8,11 +16,11 @@ type RecordPostBody struct {
 }
 
 type RecordResponse struct {
-	VideoURL                  string        `json:"video_url"`
-	VideoID                   string        `json:"video_id"`
-	FileLocation              string        `json:"file_location"`
-	Status                    record.Status `json:"status,omitempty"`
-	TranslationTargetLanguage string        `json:"translation_target_language,omitempty"`
+	VideoURL                  string `json:"video_url"`
+	VideoID                   string `json:"video_id"`
+	FileLocation              string `json:"file_location"`
+	Status                    Status `json:"status,omitempty"`
+	TranslationTargetLanguage string `json:"translation_target_language,omitempty"`
 }
 
 type RecordResultsQueryParams struct {
@@ -20,7 +28,7 @@ type RecordResultsQueryParams struct {
 }
 
 type RecordResultsResponse struct {
-	Status record.Status `json:"status"`
+	Status Status `json:"status"`
 }
 
 type ProcessVideoIDWorkerResults struct {
