@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"github.com/GrewalAS/yt-transcription-translation/internal"
@@ -14,13 +13,11 @@ import (
 type Server struct {
 	httpServer *http.Server
 	logger     *zap.Logger
-	runID      uuid.UUID
-	ctx        context.Context
+	dm         *internal.DownloadManager
 }
 
 func NewServer(parentLogger *zap.Logger) *Server {
 	logger := parentLogger.With(zap.String("component", "Server"))
-	runID := uuid.New()
 	handler := http.NewServeMux()
 	httpServer := &http.Server{
 		Addr:         ":61235",
@@ -28,7 +25,7 @@ func NewServer(parentLogger *zap.Logger) *Server {
 		ReadTimeout:  internal.ConnReadIdleTimeoutS,
 		WriteTimeout: internal.ConnWriteIdleTimeoutS,
 	}
-	server := &Server{logger: logger, runID: runID, httpServer: httpServer}
+	server := &Server{logger: logger, httpServer: httpServer, dm: internal.NewDownloadManager()}
 	server.configureRoutes(handler)
 	return server
 }

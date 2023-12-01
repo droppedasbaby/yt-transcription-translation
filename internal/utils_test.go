@@ -2,20 +2,20 @@ package internal_test
 
 import (
 	"context"
-	"github.com/GrewalAS/yt-transcription-translation/internal"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/GrewalAS/yt-transcription-translation/internal"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func TestCreateDirAndGetFullPath(t *testing.T) {
-	tmpDir, _ := ioutil.TempDir("", "test")
+	tmpDir, _ := os.MkdirTemp("", "test")
 	originalHome := os.Getenv("HOME")
 	os.Setenv("HOME", tmpDir)
 	defer func() {
@@ -45,6 +45,7 @@ func TestWaitForShutdown(t *testing.T) {
 		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 	}()
 	err = internal.WaitForShutdown(ctx, logger)
+	cancel()
 	assert.NoError(t, err)
 }
 
@@ -56,7 +57,7 @@ func TestChainMiddleware(t *testing.T) {
 }
 
 func TestMethodChecker(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 	middleware := internal.MethodChecker("GET")
@@ -74,7 +75,7 @@ func TestMethodChecker(t *testing.T) {
 }
 
 func TestJSONHeadersMiddleware(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 	middleware := internal.JSONHeadersMiddleware()
