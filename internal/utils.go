@@ -99,3 +99,11 @@ func JSONHeadersMiddleware() ChainMiddlewareFunc {
 		})
 	}
 }
+
+func GetEnvVars(key string) (string, error) {
+	value := os.Getenv(key)
+	if value == "" {
+		return "", fmt.Errorf("GetEnvVars: %s not set", key)
+	}
+	return value, nil
+}

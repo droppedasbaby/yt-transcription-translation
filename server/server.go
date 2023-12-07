@@ -16,7 +16,12 @@ type Server struct {
 	dm         *internal.DownloadManager
 }
 
-func NewServer(parentLogger *zap.Logger) *Server {
+func NewServer(ctx context.Context, parentLogger *zap.Logger) *Server {
+	openaiKey, err := internal.GetEnvVars("OPENAI_KEY")
+	if err != nil {
+		panic("Could not get OpenAI key")
+	}
+
 	logger := parentLogger.With(zap.String("component", "Server"))
 	handler := http.NewServeMux()
 	httpServer := &http.Server{
@@ -25,7 +30,11 @@ func NewServer(parentLogger *zap.Logger) *Server {
 		ReadTimeout:  internal.ConnReadIdleTimeoutS,
 		WriteTimeout: internal.ConnWriteIdleTimeoutS,
 	}
-	server := &Server{logger: logger, httpServer: httpServer, dm: internal.NewDownloadManager()}
+	server := &Server{
+		logger:     logger,
+		httpServer: httpServer,
+		dm:         internal.NewDownloadManager(logger, openaiKey, ctx),
+	}
 	server.configureRoutes(handler)
 	return server
 }

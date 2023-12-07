@@ -27,7 +27,7 @@ func orchestrateServer(wg *sync.WaitGroup, parentLogger *zap.Logger) {
 
 	logger.Info("Initializing db connection...")
 	logger.Info("Starting server...")
-	s := server.NewServer(logger)
+	s := server.NewServer(ctx, logger)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
